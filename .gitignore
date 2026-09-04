@@ -1,4 +1,8 @@
+# Secrets — never commit API keys
 .env
+.env.*
+!.env.example
+
 .venv/
 venv/
 __pycache__/
@@ -7,9 +11,22 @@ __pycache__/
 *.sqlite
 .pytest_cache/
 .mypy_cache/
+.coverage
+htmlcov/
+*.log
+.DS_Store
+Thumbs.db
+
 node_modules/
 dist/
 frontend/dist/
+frontend/.vite/
 *.egg-info/
 .idea/
 .vscode/
+
+# Local verification / skip-LLM runs. Do not add new artifacts/run_<uuid>/
+# folders. The official scored run 27da232e is already tracked.
+artifacts/run_*/
+!artifacts/run_27da232e-53a9-4122-abaf-57ed6e10d6a2/
+!artifacts/run_27da232e-53a9-4122-abaf-57ed6e10d6a2/**
