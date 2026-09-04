@@ -1,0 +1,498 @@
+{
+  "kind": "unique_cause_gate_simulation",
+  "not": "an updated AI exception-type accuracy score",
+  "baseline_run_id": "27da232e-53a9-4122-abaf-57ed6e10d6a2",
+  "official_ai_exception_accuracy_pct": 85.0,
+  "official_ai_correct": 34,
+  "official_ai_scored": 40,
+  "leftovers_simulated": 40,
+  "multi_family_blocked_from_auto_suggest": 6,
+  "rows": [
+    {
+      "exception_id": 1,
+      "order_ref": "ORD-2026-0111",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 2,
+      "order_ref": "ORD-2026-0112",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 3,
+      "order_ref": "ORD-2026-0113",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 4,
+      "order_ref": "ORD-2026-0114",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 5,
+      "order_ref": "ORD-2026-0115",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 6,
+      "order_ref": "ORD-2026-0116",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 7,
+      "order_ref": "ORD-2026-0117",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 8,
+      "order_ref": "ORD-2026-0118",
+      "ground_truth_type": "BANK_FEE",
+      "baseline_exception_type": "BANK_FEE",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 9,
+      "order_ref": "ORD-2026-0119",
+      "ground_truth_type": "DUPLICATE_RECORD",
+      "baseline_exception_type": "DUPLICATE_RECORD",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DUPLICATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 10,
+      "order_ref": "ORD-2026-0120",
+      "ground_truth_type": "DUPLICATE_RECORD",
+      "baseline_exception_type": "DUPLICATE_RECORD",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DUPLICATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 11,
+      "order_ref": "ORD-2026-0121",
+      "ground_truth_type": "DUPLICATE_RECORD",
+      "baseline_exception_type": "DUPLICATE_RECORD",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DUPLICATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 12,
+      "order_ref": "ORD-2026-0122",
+      "ground_truth_type": "DUPLICATE_RECORD",
+      "baseline_exception_type": "DUPLICATE_RECORD",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DUPLICATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 13,
+      "order_ref": "ORD-2026-0123",
+      "ground_truth_type": "DUPLICATE_RECORD",
+      "baseline_exception_type": "DUPLICATE_RECORD",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DUPLICATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 14,
+      "order_ref": "ORD-2026-0124",
+      "ground_truth_type": "DUPLICATE_RECORD",
+      "baseline_exception_type": "DUPLICATE_RECORD",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DUPLICATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 15,
+      "order_ref": "ORD-2026-0125",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 16,
+      "order_ref": "ORD-2026-0126",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 17,
+      "order_ref": "ORD-2026-0127",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 18,
+      "order_ref": "ORD-2026-0128",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 19,
+      "order_ref": "ORD-2026-0129",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 20,
+      "order_ref": "ORD-2026-0130",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 21,
+      "order_ref": "ORD-2026-0131",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 22,
+      "order_ref": "ORD-2026-0132",
+      "ground_truth_type": "MISSING_BANK_RECEIPT",
+      "baseline_exception_type": "MISSING_BANK_RECEIPT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "MISSING_SOURCE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 23,
+      "order_ref": "ORD-2026-0133",
+      "ground_truth_type": "DATE_DRIFT",
+      "baseline_exception_type": "DATE_DRIFT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 24,
+      "order_ref": "ORD-2026-0134",
+      "ground_truth_type": "DATE_DRIFT",
+      "baseline_exception_type": "DATE_DRIFT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 25,
+      "order_ref": "ORD-2026-0135",
+      "ground_truth_type": "DATE_DRIFT",
+      "baseline_exception_type": "DATE_DRIFT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 26,
+      "order_ref": "ORD-2026-0136",
+      "ground_truth_type": "DATE_DRIFT",
+      "baseline_exception_type": "DATE_DRIFT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 27,
+      "order_ref": "ORD-2026-0137",
+      "ground_truth_type": "DATE_DRIFT",
+      "baseline_exception_type": "DATE_DRIFT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 28,
+      "order_ref": "ORD-2026-0138",
+      "ground_truth_type": "DATE_DRIFT",
+      "baseline_exception_type": "DATE_DRIFT",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 29,
+      "order_ref": "ORD-2026-0139",
+      "ground_truth_type": "AMOUNT_MISMATCH",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 30,
+      "order_ref": "ORD-2026-0140",
+      "ground_truth_type": "AMOUNT_MISMATCH",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 31,
+      "order_ref": "ORD-2026-0141",
+      "ground_truth_type": "AMOUNT_MISMATCH",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 32,
+      "order_ref": "ORD-2026-0142",
+      "ground_truth_type": "AMOUNT_MISMATCH",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 33,
+      "order_ref": "ORD-2026-0143",
+      "ground_truth_type": "AMOUNT_MISMATCH",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 34,
+      "order_ref": "ORD-2026-0144",
+      "ground_truth_type": "AMOUNT_MISMATCH",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "AUTO_SUGGESTED",
+      "anomaly_families": [
+        "AMOUNT"
+      ],
+      "ai_verdict_correct_unchanged": true
+    },
+    {
+      "exception_id": 35,
+      "order_ref": "ORD-2026-0145",
+      "ground_truth_type": "UNRESOLVABLE",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "UNRESOLVED",
+      "anomaly_families": [
+        "AMOUNT",
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": false
+    },
+    {
+      "exception_id": 36,
+      "order_ref": "ORD-2026-0146",
+      "ground_truth_type": "UNRESOLVABLE",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "UNRESOLVED",
+      "anomaly_families": [
+        "AMOUNT",
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": false
+    },
+    {
+      "exception_id": 37,
+      "order_ref": "ORD-2026-0147",
+      "ground_truth_type": "UNRESOLVABLE",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "UNRESOLVED",
+      "anomaly_families": [
+        "AMOUNT",
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": false
+    },
+    {
+      "exception_id": 38,
+      "order_ref": "ORD-2026-0148",
+      "ground_truth_type": "UNRESOLVABLE",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "UNRESOLVED",
+      "anomaly_families": [
+        "AMOUNT",
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": false
+    },
+    {
+      "exception_id": 39,
+      "order_ref": "ORD-2026-0149",
+      "ground_truth_type": "UNRESOLVABLE",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "UNRESOLVED",
+      "anomaly_families": [
+        "AMOUNT",
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": false
+    },
+    {
+      "exception_id": 40,
+      "order_ref": "ORD-2026-0150",
+      "ground_truth_type": "UNRESOLVABLE",
+      "baseline_exception_type": "AMOUNT_MISMATCH",
+      "baseline_status": "AUTO_SUGGESTED",
+      "gated_status": "UNRESOLVED",
+      "anomaly_families": [
+        "AMOUNT",
+        "DATE"
+      ],
+      "ai_verdict_correct_unchanged": false
+    }
+  ]
+}

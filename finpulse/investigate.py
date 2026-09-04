@@ -17,7 +17,8 @@ from finpulse.enums import (
     ActorType,
     ExceptionStatus,
 )
-from finpulse.ingest import write_audit
+from finpulse.gate import apply_unique_cause_gate, detect_families
+from finpulse.ingest import to_views, write_audit
 from finpulse.models import ExceptionRow, Match, Transaction
 from finpulse.policy import apply_policy
 from finpulse.prompt import (
@@ -201,6 +202,16 @@ async def investigate_jobs(jobs: list[InvestigateJob], concurrency: int | None =
         return await asyncio.gather(*[bounded(job) for job in jobs])
 
 
+def _order_views_for_exception(db: Session, row: ExceptionRow) -> list:
+    related_ids = json.loads(row.related_txn_ids)
+    related = db.query(Transaction).filter(Transaction.id.in_(related_ids)).all()
+    if not related:
+        return []
+    order_ref = related[0].order_ref
+    all_on_order = db.query(Transaction).filter(Transaction.order_ref == order_ref).all()
+    return to_views(all_on_order)
+
+
 def persist_outcomes(db: Session, outcomes: list[InvestigateOutcome]) -> dict:
     latencies: list[float] = []
     for outcome in outcomes:
@@ -208,6 +219,7 @@ def persist_outcomes(db: Session, outcomes: list[InvestigateOutcome]) -> dict:
         before = {"status": row.status, "exception_type": row.exception_type}
         latencies.append(outcome.latency_ms)
         row.llm_raw_response = outcome.raw_response or outcome.error
+        families = frozenset()
         if outcome.result is None:
             row.exception_type = None
             row.ai_explanation = f"LLM call failed: {outcome.error}"
@@ -222,11 +234,13 @@ def persist_outcomes(db: Session, outcomes: list[InvestigateOutcome]) -> dict:
             row.ai_explanation = outcome.result.explanation
             row.confidence = outcome.result.confidence
             row.recommended_action = outcome.result.recommended_action
-            row.status = apply_policy(
+            policy_status = apply_policy(
                 confidence=outcome.result.confidence,
                 insufficient_evidence=outcome.result.insufficient_evidence,
                 exception_type=outcome.result.exception_type,
-            ).value
+            )
+            families = detect_families(_order_views_for_exception(db, row))
+            row.status = apply_unique_cause_gate(policy_status, families).value
         write_audit(
             db,
             ActorType.AI,
@@ -239,6 +253,7 @@ def persist_outcomes(db: Session, outcomes: list[InvestigateOutcome]) -> dict:
                 "exception_type": row.exception_type,
                 "confidence": row.confidence,
                 "error": outcome.error,
+                "anomaly_families": sorted(f.value for f in families),
             },
         )
     avg = (sum(latencies) / len(latencies)) if latencies else None

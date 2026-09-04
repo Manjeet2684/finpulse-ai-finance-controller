@@ -5,6 +5,7 @@ import json
 
 import uvicorn
 
+from finpulse.gate import write_frozen_run_gate_simulation
 from finpulse.pipeline import generate, resume_investigation, run_batch
 
 
@@ -18,6 +19,10 @@ def main(argv: list[str] | None = None) -> None:
     run_p.add_argument("--skip-llm", action="store_true")
     run_p.add_argument("--force-investigate", action="store_true")
     sub.add_parser("investigate", help="Resume LLM investigation on the latest run (retries failed calls)")
+    sub.add_parser(
+        "gate-sim",
+        help="Read-only unique-cause gate simulation on frozen run 27da232e (does not change accuracy)",
+    )
     serve_p = sub.add_parser("serve", help="Start the API")
     serve_p.add_argument("--host", default="127.0.0.1")
     serve_p.add_argument("--port", type=int, default=8000)
@@ -45,6 +50,10 @@ def main(argv: list[str] | None = None) -> None:
     if args.cmd == "investigate":
         summary = resume_investigation()
         print(json.dumps(summary, indent=2, default=str))
+        return
+    if args.cmd == "gate-sim":
+        path = write_frozen_run_gate_simulation()
+        print(json.dumps({"wrote": str(path), "note": "routing simulation only; baseline accuracy unchanged"}, indent=2))
         return
     if args.cmd == "serve":
         uvicorn.run("finpulse.api:app", host=args.host, port=args.port, reload=False)

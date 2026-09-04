@@ -18,7 +18,8 @@ The agent closes **one** finance-ops loop on a seeded batch of **150 canonical c
 CSV fixtures → SQLite
                 ├─ matcher (order_ref + amount + ±24h)
                 ├─ investigate()  ← only LLM seam
-                ├─ policy gate (0.6 retry, 0.85 AUTO_SUGGESTED, UNRESOLVABLE → UNRESOLVED)
+                ├─ unique-cause evidence gate (status/routing only)
+                ├─ policy gate (0.6 retry, 0.85 AUTO_SUGGESTED; UNRESOLVABLE or 2+ evidence families → UNRESOLVED)
                 └─ artifacts/ + dashboard
 ```
 
@@ -76,6 +77,8 @@ Copied from `artifacts/run_27da232e-53a9-4122-abaf-57ed6e10d6a2/metrics.json`. N
 **Throughput note:** matcher time is 4 ms. The 2058 s wall clock is calendar time of this scored run, including Gemini free-tier 429s (20 requests/day per model) and two `finpulse investigate` resumes onto other Flash models. It is not a clean uninterrupted batch clock.
 
 Inspect: `artifacts/run_27da232e-53a9-4122-abaf-57ed6e10d6a2/incorrect.csv`, `exceptions.csv`, `recon_report.json`.
+
+A later unique-cause **routing** simulation lives in `artifacts/gate_simulation_27da232e.json`. It does not change the 85.0% AI type accuracy.
 
 ## How AI is used
 
