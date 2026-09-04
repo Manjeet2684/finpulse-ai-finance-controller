@@ -1,0 +1,29 @@
+{
+  "run_id": "27da232e-53a9-4122-abaf-57ed6e10d6a2",
+  "resumed": true,
+  "investigation": {
+    "investigated": 12,
+    "failed": 0,
+    "retried": 0,
+    "avg_llm_latency_ms": 8909.358191672558,
+    "investigate_ms": 55442.1876000124,
+    "status_counts": {
+      "AUTO_SUGGESTED": 40
+    },
+    "predicted_type_counts": {
+      "BANK_FEE": 8,
+      "DUPLICATE_RECORD": 6,
+      "MISSING_BANK_RECEIPT": 8,
+      "DATE_DRIFT": 6,
+      "AMOUNT_MISMATCH": 12
+    },
+    "unresolved_examples": [],
+    "unresolved_count": 0,
+    "exception_accuracy": {
+      "scored": 40,
+      "correct": 34,
+      "exception_accuracy_pct": 85.0
+    },
+    "artifact_dir": "C:\\Users\\manme\\Desktop\\finpulse-ai-finance-controller\\artifacts\\run_27da232e-53a9-4122-abaf-57ed6e10d6a2"
+  }
+}

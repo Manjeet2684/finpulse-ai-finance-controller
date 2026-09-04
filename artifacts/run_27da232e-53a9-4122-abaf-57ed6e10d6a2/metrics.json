@@ -1,0 +1,21 @@
+{
+  "run_id": "27da232e-53a9-4122-abaf-57ed6e10d6a2",
+  "started_at": "2026-09-04T15:21:59.977190",
+  "finished_at": "2026-09-04T15:42:18.402748",
+  "records_processed": 448,
+  "exceptions_created": 40,
+  "wall_clock_seconds": 2058.373526499956,
+  "records_per_minute": 13.058854310911473,
+  "records_per_second": 0.21764757184852454,
+  "match_ms": 3.974099992774427,
+  "investigate_ms": 821633.2157999859,
+  "avg_llm_latency_ms": 8909.358191672558,
+  "matcher_precision": 1.0,
+  "matcher_recall": 1.0,
+  "exception_accuracy_pct": 85.0,
+  "manual_baseline_minutes_assumed": 120.0,
+  "manual_baseline_note": "ASSUMED 3 minutes per exception \u2014 not a measured number",
+  "cash_matched_amount": "2215116.50",
+  "cash_in_transit_amount": "186001.00",
+  "cash_exception_amount": "524903.00"
+}

@@ -11,10 +11,11 @@ DB_PATH = ROOT / "finpulse.db"
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=ROOT / ".env", extra="ignore")
 
-    openai_api_key: str = ""
-    openai_model: str = "gpt-4o-mini"
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-3.5-flash"
+    gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
     finpulse_database_url: str = f"sqlite:///{DB_PATH.as_posix()}"
-    finpulse_llm_concurrency: int = 5
+    finpulse_llm_concurrency: int = 2
 
 
 def get_settings() -> Settings:

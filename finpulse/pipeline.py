@@ -184,12 +184,38 @@ def run_batch(
         with session_scope() as db:
             write_run_artifacts(db, summary["run_id"])
         return summary
+    return _finish_investigation(summary["run_id"], summary, force_investigate=force_investigate)
 
+
+def resume_investigation(run_id: str | None = None, retry_failed: bool = True) -> dict:
+    """Continue LLM investigation on an existing run without re-ingesting."""
     settings = get_settings()
-    if not settings.openai_api_key:
-        raise RuntimeError("OPENAI_API_KEY is missing. Put it in .env before investigation.")
+    if not settings.gemini_api_key:
+        raise RuntimeError("GEMINI_API_KEY is missing. Put it in .env before investigation.")
+    init_db()
+    with session_scope() as db:
+        if run_id is None:
+            latest = db.query(RunMetrics).order_by(RunMetrics.started_at.desc()).first()
+            if latest is None:
+                raise RuntimeError("No run to resume.")
+            run_id = latest.run_id
+        if retry_failed:
+            rows = (
+                db.query(ExceptionRow)
+                .filter(ExceptionRow.run_id == run_id, ExceptionRow.exception_type.is_(None))
+                .all()
+            )
+            for row in rows:
+                row.investigated_at = None
+        summary = {"run_id": run_id, "resumed": True}
+    return _finish_investigation(run_id, summary, force_investigate=False)
 
-    run_id = summary["run_id"]
+
+def _finish_investigation(run_id: str, summary: dict, force_investigate: bool = False) -> dict:
+    settings = get_settings()
+    if not settings.gemini_api_key:
+        raise RuntimeError("GEMINI_API_KEY is missing. Put it in .env before investigation.")
+
     t0 = perf_counter()
     with session_scope() as db:
         inv = run_investigation(db, run_id, force=force_investigate)
@@ -203,8 +229,10 @@ def run_batch(
             type_counts[key] = type_counts.get(key, 0) + 1
         unresolved = [_exception_snapshot(r) for r in rows if r.status == "UNRESOLVED"]
         metrics = db.query(RunMetrics).filter(RunMetrics.run_id == run_id).one()
-        metrics.investigate_ms = investigate_ms
-        metrics.avg_llm_latency_ms = inv["avg_llm_latency_ms"]
+        prev_ms = metrics.investigate_ms or 0.0
+        metrics.investigate_ms = prev_ms + investigate_ms
+        if inv["avg_llm_latency_ms"] is not None:
+            metrics.avg_llm_latency_ms = inv["avg_llm_latency_ms"]
         metrics.finished_at = datetime.utcnow()
         score = apply_exception_scores(db, run_id)
         artifact_dir = write_run_artifacts(db, run_id)

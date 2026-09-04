@@ -5,7 +5,7 @@ import json
 
 import uvicorn
 
-from finpulse.pipeline import generate, run_batch
+from finpulse.pipeline import generate, resume_investigation, run_batch
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -17,6 +17,7 @@ def main(argv: list[str] | None = None) -> None:
     run_p.add_argument("--no-reset", action="store_true")
     run_p.add_argument("--skip-llm", action="store_true")
     run_p.add_argument("--force-investigate", action="store_true")
+    sub.add_parser("investigate", help="Resume LLM investigation on the latest run (retries failed calls)")
     serve_p = sub.add_parser("serve", help="Start the API")
     serve_p.add_argument("--host", default="127.0.0.1")
     serve_p.add_argument("--port", type=int, default=8000)
@@ -39,6 +40,10 @@ def main(argv: list[str] | None = None) -> None:
             skip_llm=args.skip_llm,
             force_investigate=args.force_investigate,
         )
+        print(json.dumps(summary, indent=2, default=str))
+        return
+    if args.cmd == "investigate":
+        summary = resume_investigation()
         print(json.dumps(summary, indent=2, default=str))
         return
     if args.cmd == "serve":

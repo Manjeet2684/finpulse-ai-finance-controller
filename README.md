@@ -8,7 +8,7 @@ The agent closes **one** finance-ops loop on a seeded batch of **150 canonical c
 
 1. Ingest three source CSVs.
 2. Deterministic matcher posts triples with the same `order_ref`, the same amount, and timestamps within **±24 hours**. No LLM is involved.
-3. Leftovers become exceptions. `investigate()` (OpenAI) classifies `exception_type` and explains. AI never posts, never does money math, never auto-approves.
+3. Leftovers become exceptions. `investigate()` (Gemini via the OpenAI-compatible endpoint) classifies `exception_type` and explains. AI never posts, never does money math, never auto-approves.
 4. A human approves or escalates.
 5. One scored run writes `artifacts/run_<id>/`.
 
@@ -32,10 +32,11 @@ Ground truth is planted by the generator, stored on `Match` / `Exception`, **nev
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env   # add OPENAI_API_KEY
+copy .env.example .env   # add GEMINI_API_KEY
 python -m finpulse generate
-python -m finpulse run          # matcher + LLM + score + artifacts
-python -m finpulse run --skip-llm   # matcher only, if you have no key yet
+python -m finpulse run          # matcher + Gemini + score + artifacts
+python -m finpulse investigate  # resume failed LLM calls without re-ingesting
+python -m finpulse run --skip-llm   # matcher only
 python -m pytest
 python -m finpulse serve        # API on :8000
 ```
@@ -48,9 +49,9 @@ npm install
 npm run dev                     # :5173, proxies to the API
 ```
 
-## Measured numbers (matcher-only run `595dff23-303a-450b-9990-2f14feecb852`)
+## Measured numbers (scored run `27da232e-53a9-4122-abaf-57ed6e10d6a2`)
 
-Copied from `artifacts/run_595dff23-303a-450b-9990-2f14feecb852/metrics.json`. Not estimated.
+Copied from `artifacts/run_27da232e-53a9-4122-abaf-57ed6e10d6a2/metrics.json`. Not estimated.
 
 | Metric | Value |
 |---|---|
@@ -60,46 +61,53 @@ Copied from `artifacts/run_595dff23-303a-450b-9990-2f14feecb852/metrics.json`. N
 | Matcher recall | 1.0 |
 | Matches created | 116 / 116 planted |
 | Traps correctly refused | 34 / 34 |
-| Exceptions created | 40 (8 BANK_FEE, 6 DUPLICATE, 8 MISSING_BANK, 6 DATE_DRIFT, 6 AMOUNT_MISMATCH, 6 UNRESOLVABLE) |
-| Match wall time | 4.37 ms |
-| Ingest+match throughput | 2329.88 records/sec (matcher-only; LLM not in this run) |
+| Exceptions created | 40 |
+| Exception-type accuracy | **85.0% (34 / 40)** |
+| Match wall time | 3.97 ms |
+| End-to-end wall clock | 2058.37 s (includes free-tier quota pauses and two resumes — see note) |
+| Throughput (that wall clock) | 13.06 records/min · 0.218 records/sec |
 | Cash matched | ₹22,15,116.50 |
 | Cash in transit | ₹1,86,001.00 |
 | Cash exceptional | ₹5,24,903.00 |
 | Manual baseline | **ASSUMED** 120 minutes (3 min × 40 exceptions) — not measured |
-| Exception-type accuracy | **null — LLM not run; no key in this environment** |
 
-Inspect: `artifacts/run_595dff23-303a-450b-9990-2f14feecb852/unresolved.csv` and `recon_report.json`.
+**Accuracy breakdown:** 8/8 BANK_FEE, 6/6 DUPLICATE_RECORD, 8/8 MISSING_BANK_RECEIPT, 6/6 DATE_DRIFT, 6/6 AMOUNT_MISMATCH, **0/6 UNRESOLVABLE**. All six misses are `UNRESOLVABLE → AMOUNT_MISMATCH` (high-confidence). Inspect `incorrect.csv`. Policy `unresolved.csv` is empty because the model never set `insufficient_evidence` on those six.
 
-After you add `OPENAI_API_KEY` and re-run without `--skip-llm`, `exception_accuracy_pct`, `investigate_ms`, and end-to-end records/sec will be overwritten from that run. Do not hand-edit this table.
+**Throughput note:** matcher time is 4 ms. The 2058 s wall clock is calendar time of this scored run, including Gemini free-tier 429s (20 requests/day per model) and two `finpulse investigate` resumes onto other Flash models. It is not a clean uninterrupted batch clock.
+
+Inspect: `artifacts/run_27da232e-53a9-4122-abaf-57ed6e10d6a2/incorrect.csv`, `exceptions.csv`, `recon_report.json`.
 
 ## How AI is used
 
 - Only through `finpulse/investigate.py` → `investigate()`.
+- Provider: Gemini free tier, OpenAI SDK pointed at `https://generativelanguage.googleapis.com/v1beta/openai/`. Default model `gemini-3.5-flash`.
 - Input: leftover records plus other rows on the same `order_ref`. No ground-truth fields.
 - Output: `exception_type` enum, explanation, confidence, recommended action, `insufficient_evidence`.
-- One extra call if confidence &lt; 0.6. Cached after `investigated_at` is set.
-- Concurrency capped at 5.
-- Failed calls become `UNRESOLVED`, not scored as correct.
+- One extra classification call if confidence &lt; 0.6. Successful calls are cached (`investigated_at`). Failed quota calls are not cached.
+- Concurrency default 2 (Gemini free RPM is 5).
+- Failed calls stay `UNRESOLVED` and are scored as incorrect until retried.
 
 ## Known limitations
 
-- Synthetic data, fixed seed 42. Match rate is only meaningful next to the planted mix above.
+- Synthetic data, fixed seed 42. Match rate is only meaningful next to the planted mix.
 - 3-way match requires exact amount equality; fees never auto-match.
 - AI cannot close the books. AUTO_SUGGESTED still needs a human.
-- End-to-end throughput including LLM is missing until a keyed run.
+- Gemini free-tier per-model daily cap is 20 requests. This scored run used `gemini-3.6-flash`, then `gemini-flash-latest` (3.8), then `gemini-3.5-flash` to finish 40 leftovers.
+- The model never classified `UNRESOLVABLE`; it called those six `AMOUNT_MISMATCH` instead.
 - SQLite, local only. No live Razorpay APIs.
 
 ## What broke (Failure Recovery)
 
 - Pinned `pydantic==2.11.3` has no Python 3.14 Windows wheel; moved to 2.13.5 which ships `pydantic-core` cp314.
 - `session_scope()` was a bare generator; wrapping it with `@contextmanager` unblocked the first real run.
-- No `OPENAI_API_KEY` in this environment, so Gate B/C LLM scoring is implemented but not executed. Matcher artifacts were still written rather than faking an accuracy number.
+- `gemini-2.5-flash` returns 404 for new API users; Google now requires `gemini-3.x-flash`.
+- `gemini-3.6-flash` free tier is 20 requests/day; the first investigation wave stopped at 19 successes + 21 quota failures. Failures are not cached. `python -m finpulse investigate` resumed on other Flash models.
+- `gemini-flash-latest` aliases `gemini-3.8-flash` (5 RPM / 20 RPD). Concurrency was dropped to 2 and RPM 429s wait for the advertised retry delay; daily-quota 429s do not wait.
 
 ## Pitch outline (5 minutes)
 
 1. Problem: 3-way recon is still done by hand; one cherry-picked match proves nothing.
-2. Demo the command and open `unresolved.csv`.
+2. Demo the command and open `incorrect.csv` (the six UNRESOLVABLE misses).
 3. Split: matcher has no LLM; LLM cannot touch amounts or post.
-4. Three numbers: matcher precision/recall, exception-type accuracy (after keyed run), records/min.
-5. One failure: unresolvable case + missing API key handled without inventing metrics.
+4. Three numbers: matcher 1.0/1.0, exception-type accuracy 85.0%, matcher 4 ms vs assumed 120 min manual.
+5. One failure: free-tier quota exhausted mid-batch; we resumed instead of inventing accuracy.

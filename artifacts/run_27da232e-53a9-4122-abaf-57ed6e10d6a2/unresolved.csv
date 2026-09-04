@@ -1,0 +1,1 @@
+id,run_id,status,exception_type,ground_truth_type,ai_verdict_correct,confidence,detected_reason,ai_explanation,recommended_action,related_txn_ids,reviewer,reviewed_at,investigated_at,ground_truth_label

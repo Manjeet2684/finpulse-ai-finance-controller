@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
@@ -90,6 +91,25 @@ def build_jobs(db: Session, run_id: str, force: bool = False) -> list[Investigat
     return jobs
 
 
+def _retry_wait_seconds(exc: Exception) -> float | None:
+    text = str(exc)
+    if "GenerateRequestsPerDayPerProjectPerModel" in text:
+        return None
+    match = re.search(r"Please retry in ([\d.]+)s", text)
+    if match:
+        return min(float(match.group(1)) + 2.0, 90.0)
+    if "429" in text or "RESOURCE_EXHAUSTED" in text:
+        return 45.0
+    return None
+
+
+def _client(settings=None) -> AsyncOpenAI:
+    settings = settings or get_settings()
+    if not settings.gemini_api_key:
+        raise RuntimeError("GEMINI_API_KEY is missing. Put it in .env before investigation.")
+    return AsyncOpenAI(api_key=settings.gemini_api_key, base_url=settings.gemini_base_url)
+
+
 async def investigate(
     job: InvestigateJob,
     retry: bool = False,
@@ -98,9 +118,7 @@ async def investigate(
     """Single LLM call. Provider is swappable by replacing this function."""
     settings = get_settings()
     if client is None:
-        if not settings.openai_api_key:
-            raise RuntimeError("OPENAI_API_KEY is missing. Put it in .env before investigation.")
-        client = AsyncOpenAI(api_key=settings.openai_api_key)
+        client = _client(settings)
 
     user = USER_PROMPT_TEMPLATE.format(
         prompt_version=PROMPT_VERSION,
@@ -111,25 +129,36 @@ async def investigate(
     if retry:
         user = user + "\n\n" + RETRY_INSTRUCTION
 
-    response = await client.chat.completions.create(
-        model=settings.openai_model,
-        temperature=0,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user},
-        ],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "investigation_result",
-                "strict": True,
-                "schema": INVESTIGATION_JSON_SCHEMA,
-            },
-        },
-    )
-    raw = response.choices[0].message.content or ""
-    parsed = InvestigationResult.model_validate_json(raw)
-    return parsed, raw
+    last_error: Exception | None = None
+    for attempt in range(6):
+        try:
+            response = await client.chat.completions.create(
+                model=settings.gemini_model,
+                temperature=0,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user},
+                ],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "investigation_result",
+                        "strict": True,
+                        "schema": INVESTIGATION_JSON_SCHEMA,
+                    },
+                },
+            )
+            raw = response.choices[0].message.content or ""
+            parsed = InvestigationResult.model_validate_json(raw)
+            return parsed, raw
+        except Exception as exc:  # noqa: BLE001 — quota backoff only; then raise
+            last_error = exc
+            wait = _retry_wait_seconds(exc)
+            if attempt < 5 and wait is not None:
+                await asyncio.sleep(wait)
+                continue
+            raise
+    raise last_error or RuntimeError("investigate() failed")
 
 
 async def _investigate_with_retry(job: InvestigateJob, client: AsyncOpenAI) -> InvestigateOutcome:
@@ -160,11 +189,9 @@ async def _investigate_with_retry(job: InvestigateJob, client: AsyncOpenAI) -> I
 
 async def investigate_jobs(jobs: list[InvestigateJob], concurrency: int | None = None) -> list[InvestigateOutcome]:
     settings = get_settings()
-    if not settings.openai_api_key:
-        raise RuntimeError("OPENAI_API_KEY is missing. Put it in .env before investigation.")
     limit = concurrency or settings.finpulse_llm_concurrency
     sem = asyncio.Semaphore(limit)
-    client = AsyncOpenAI(api_key=settings.openai_api_key)
+    client = _client(settings)
     async with client:
 
         async def bounded(job: InvestigateJob) -> InvestigateOutcome:
@@ -180,7 +207,6 @@ def persist_outcomes(db: Session, outcomes: list[InvestigateOutcome]) -> dict:
         row = db.query(ExceptionRow).filter(ExceptionRow.id == outcome.exception_id).one()
         before = {"status": row.status, "exception_type": row.exception_type}
         latencies.append(outcome.latency_ms)
-        row.investigated_at = datetime.utcnow()
         row.llm_raw_response = outcome.raw_response or outcome.error
         if outcome.result is None:
             row.exception_type = None
@@ -188,7 +214,10 @@ def persist_outcomes(db: Session, outcomes: list[InvestigateOutcome]) -> dict:
             row.confidence = None
             row.recommended_action = None
             row.status = ExceptionStatus.UNRESOLVED
+            # Quota/network failures are not investigations — leave cache unset so resume can retry.
+            row.investigated_at = None
         else:
+            row.investigated_at = datetime.utcnow()
             row.exception_type = outcome.result.exception_type.value
             row.ai_explanation = outcome.result.explanation
             row.confidence = outcome.result.confidence

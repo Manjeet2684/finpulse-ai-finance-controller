@@ -147,6 +147,15 @@ def write_run_artifacts(db: Session, run_id: str) -> Path:
             flat["related_txn_ids"] = json.dumps(row["related_txn_ids"])
             writer.writerow({k: flat.get(k) for k in EXCEPTION_CSV_FIELDS})
 
+    incorrect = [row for row in dumps if row["ai_verdict_correct"] is False]
+    with (out / "incorrect.csv").open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=EXCEPTION_CSV_FIELDS, extrasaction="ignore")
+        writer.writeheader()
+        for row in incorrect:
+            flat = dict(row)
+            flat["related_txn_ids"] = json.dumps(row["related_txn_ids"])
+            writer.writerow({k: flat.get(k) for k in EXCEPTION_CSV_FIELDS})
+
     def txn_brief(txn_id: int) -> dict | None:
         t = txns.get(txn_id)
         if t is None:
@@ -176,6 +185,7 @@ def write_run_artifacts(db: Session, run_id: str) -> Path:
             for m in matches
         ],
         "unresolved_exceptions": unresolved,
+        "incorrect_exception_types": incorrect,
         "cash_position": {
             "matched": _metrics_dict(metrics)["cash_matched_amount"],
             "in_transit": _metrics_dict(metrics)["cash_in_transit_amount"],
@@ -186,6 +196,7 @@ def write_run_artifacts(db: Session, run_id: str) -> Path:
             "matches": len(matches),
             "exceptions": len(exceptions),
             "unresolved_or_open_review": len(unresolved),
+            "incorrect_exception_types": len(incorrect),
         },
     }
     (out / "recon_report.json").write_text(json.dumps(recon, indent=2), encoding="utf-8")
