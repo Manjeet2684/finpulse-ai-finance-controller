@@ -8,7 +8,7 @@ from time import perf_counter
 
 from sqlalchemy.orm import Session
 
-from finpulse.config import ARTIFACT_DIR, FIXTURE_DIR
+from finpulse.config import ARTIFACT_DIR, FIXTURE_DIR, get_settings
 from finpulse.db import init_db, reset_db, session_scope
 from finpulse.enums import (
     MANUAL_MINUTES_PER_EXCEPTION_ASSUMED,
@@ -25,7 +25,9 @@ from finpulse.ingest import (
     run_matcher,
     write_audit,
 )
-from finpulse.models import RunMetrics
+from finpulse.investigate import run_investigation
+from finpulse.export import apply_exception_scores, write_run_artifacts
+from finpulse.models import ExceptionRow, RunMetrics
 from finpulse.scoring import cash_position, score_matcher
 
 
@@ -154,3 +156,74 @@ def _write_gate_a_artifacts(run_id: str, summary: dict, fixture_dir: Path) -> No
     # Copy answer key next to the run so a judge can compare without regenerating.
     key = (fixture_dir / "answer_key.json").read_text(encoding="utf-8")
     (out / "answer_key.json").write_text(key, encoding="utf-8")
+
+
+def _exception_snapshot(row: ExceptionRow) -> dict:
+    return {
+        "id": row.id,
+        "status": row.status,
+        "exception_type": row.exception_type,
+        "ground_truth_type": row.ground_truth_type,
+        "confidence": row.confidence,
+        "ai_explanation": row.ai_explanation,
+        "recommended_action": row.recommended_action,
+        "detected_reason": row.detected_reason,
+        "related_txn_ids": json.loads(row.related_txn_ids),
+        "investigated_at": row.investigated_at.isoformat() if row.investigated_at else None,
+    }
+
+
+def run_batch(
+    fixture_dir: Path | None = None,
+    reset: bool = True,
+    skip_llm: bool = False,
+    force_investigate: bool = False,
+) -> dict:
+    summary = run_gate_a(fixture_dir=fixture_dir, reset=reset)
+    if skip_llm:
+        with session_scope() as db:
+            write_run_artifacts(db, summary["run_id"])
+        return summary
+
+    settings = get_settings()
+    if not settings.openai_api_key:
+        raise RuntimeError("OPENAI_API_KEY is missing. Put it in .env before investigation.")
+
+    run_id = summary["run_id"]
+    t0 = perf_counter()
+    with session_scope() as db:
+        inv = run_investigation(db, run_id, force=force_investigate)
+        investigate_ms = (perf_counter() - t0) * 1000
+        rows = db.query(ExceptionRow).filter(ExceptionRow.run_id == run_id).all()
+        status_counts: dict[str, int] = {}
+        type_counts: dict[str, int] = {}
+        for row in rows:
+            status_counts[row.status] = status_counts.get(row.status, 0) + 1
+            key = row.exception_type or "NONE"
+            type_counts[key] = type_counts.get(key, 0) + 1
+        unresolved = [_exception_snapshot(r) for r in rows if r.status == "UNRESOLVED"]
+        metrics = db.query(RunMetrics).filter(RunMetrics.run_id == run_id).one()
+        metrics.investigate_ms = investigate_ms
+        metrics.avg_llm_latency_ms = inv["avg_llm_latency_ms"]
+        metrics.finished_at = datetime.utcnow()
+        score = apply_exception_scores(db, run_id)
+        artifact_dir = write_run_artifacts(db, run_id)
+
+    summary["investigation"] = {
+        "investigated": inv["investigated"],
+        "failed": inv["failed"],
+        "retried": inv["retried"],
+        "avg_llm_latency_ms": inv["avg_llm_latency_ms"],
+        "investigate_ms": investigate_ms,
+        "status_counts": status_counts,
+        "predicted_type_counts": type_counts,
+        "unresolved_examples": unresolved[:5],
+        "unresolved_count": len(unresolved),
+        "exception_accuracy": score,
+        "artifact_dir": str(artifact_dir),
+    }
+    out = ARTIFACT_DIR / f"run_{run_id}"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "gate_b_summary.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
+    return summary
+

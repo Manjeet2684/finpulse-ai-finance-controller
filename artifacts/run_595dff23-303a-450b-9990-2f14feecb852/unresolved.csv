@@ -1,0 +1,41 @@
+id,run_id,status,exception_type,ground_truth_type,ai_verdict_correct,confidence,detected_reason,ai_explanation,recommended_action,related_txn_ids,reviewer,reviewed_at,investigated_at,ground_truth_label
+1,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[261, 409, 111]",,,,Bank credit is net of MDR 392.01; gross 19600.50 vs net 19208.49
+2,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[262, 410, 112]",,,,Bank credit is net of MDR 108.01; gross 5400.50 vs net 5292.49
+3,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[263, 411, 113]",,,,Bank credit is net of MDR 424.00; gross 21200.00 vs net 20776.00
+4,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[264, 412, 114]",,,,Bank credit is net of MDR 478.00; gross 23900.00 vs net 23422.00
+5,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[265, 413, 115]",,,,Bank credit is net of MDR 254.00; gross 12700.00 vs net 12446.00
+6,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[266, 414, 116]",,,,Bank credit is net of MDR 64.00; gross 3200.00 vs net 3136.00
+7,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[267, 415, 117]",,,,Bank credit is net of MDR 240.00; gross 12000.00 vs net 11760.00
+8,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,BANK_FEE,,,NO_TRIPLE_MATCH,,,"[268, 416, 118]",,,,Bank credit is net of MDR 470.00; gross 23500.00 vs net 23030.00
+9,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DUPLICATE_RECORD,,,NO_TRIPLE_MATCH,,,[270],,,,Second bank UTR posted for ORD-2026-0119 after a valid triple already exists
+10,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DUPLICATE_RECORD,,,NO_TRIPLE_MATCH,,,[272],,,,Second bank UTR posted for ORD-2026-0120 after a valid triple already exists
+11,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DUPLICATE_RECORD,,,NO_TRIPLE_MATCH,,,[274],,,,Second bank UTR posted for ORD-2026-0121 after a valid triple already exists
+12,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DUPLICATE_RECORD,,,NO_TRIPLE_MATCH,,,[276],,,,Second bank UTR posted for ORD-2026-0122 after a valid triple already exists
+13,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DUPLICATE_RECORD,,,NO_TRIPLE_MATCH,,,[278],,,,Second bank UTR posted for ORD-2026-0123 after a valid triple already exists
+14,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DUPLICATE_RECORD,,,NO_TRIPLE_MATCH,,,[280],,,,Second bank UTR posted for ORD-2026-0124 after a valid triple already exists
+15,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[423, 125]",,,,Razorpay and ledger present for ORD-2026-0125; no bank credit
+16,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[424, 126]",,,,Razorpay and ledger present for ORD-2026-0126; no bank credit
+17,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[425, 127]",,,,Razorpay and ledger present for ORD-2026-0127; no bank credit
+18,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[426, 128]",,,,Razorpay and ledger present for ORD-2026-0128; no bank credit
+19,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[427, 129]",,,,Razorpay and ledger present for ORD-2026-0129; no bank credit
+20,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[428, 130]",,,,Razorpay and ledger present for ORD-2026-0130; no bank credit
+21,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[429, 131]",,,,Razorpay and ledger present for ORD-2026-0131; no bank credit
+22,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,MISSING_BANK_RECEIPT,,,NO_TRIPLE_MATCH,,,"[430, 132]",,,,Razorpay and ledger present for ORD-2026-0132; no bank credit
+23,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DATE_DRIFT,,,NO_TRIPLE_MATCH,,,"[281, 431, 133]",,,,Same amount and order_ref for ORD-2026-0133 but bank timestamp is >24h from the other two
+24,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DATE_DRIFT,,,NO_TRIPLE_MATCH,,,"[282, 432, 134]",,,,Same amount and order_ref for ORD-2026-0134 but bank timestamp is >24h from the other two
+25,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DATE_DRIFT,,,NO_TRIPLE_MATCH,,,"[283, 433, 135]",,,,Same amount and order_ref for ORD-2026-0135 but bank timestamp is >24h from the other two
+26,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DATE_DRIFT,,,NO_TRIPLE_MATCH,,,"[284, 434, 136]",,,,Same amount and order_ref for ORD-2026-0136 but bank timestamp is >24h from the other two
+27,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DATE_DRIFT,,,NO_TRIPLE_MATCH,,,"[285, 435, 137]",,,,Same amount and order_ref for ORD-2026-0137 but bank timestamp is >24h from the other two
+28,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,DATE_DRIFT,,,NO_TRIPLE_MATCH,,,"[286, 436, 138]",,,,Same amount and order_ref for ORD-2026-0138 but bank timestamp is >24h from the other two
+29,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,AMOUNT_MISMATCH,,,NO_TRIPLE_MATCH,,,"[287, 437, 139]",,,,Razorpay/bank 4300.00 vs ledger 3800.00 for ORD-2026-0139 — not an MDR pattern
+30,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,AMOUNT_MISMATCH,,,NO_TRIPLE_MATCH,,,"[288, 438, 140]",,,,Razorpay/bank 11400.00 vs ledger 10400.00 for ORD-2026-0140 — not an MDR pattern
+31,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,AMOUNT_MISMATCH,,,NO_TRIPLE_MATCH,,,"[289, 439, 141]",,,,Razorpay/bank 1400.50 vs ledger 400.50 for ORD-2026-0141 — not an MDR pattern
+32,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,AMOUNT_MISMATCH,,,NO_TRIPLE_MATCH,,,"[290, 440, 142]",,,,Razorpay/bank 13100.00 vs ledger 12100.00 for ORD-2026-0142 — not an MDR pattern
+33,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,AMOUNT_MISMATCH,,,NO_TRIPLE_MATCH,,,"[291, 441, 143]",,,,Razorpay/bank 29300.00 vs ledger 27800.00 for ORD-2026-0143 — not an MDR pattern
+34,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,AMOUNT_MISMATCH,,,NO_TRIPLE_MATCH,,,"[292, 442, 144]",,,,Razorpay/bank 6100.00 vs ledger 5600.00 for ORD-2026-0144 — not an MDR pattern
+35,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,UNRESOLVABLE,,,NO_TRIPLE_MATCH,,,"[293, 443, 145]",,,,"Three conflicting amounts and dates for ORD-2026-0145 (38000.00/38037.00/37981.00); not a single fee, duplicate, or booking miss"
+36,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,UNRESOLVABLE,,,NO_TRIPLE_MATCH,,,"[294, 444, 146]",,,,"Three conflicting amounts and dates for ORD-2026-0146 (9000.00/9121.00/8933.00); not a single fee, duplicate, or booking miss"
+37,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,UNRESOLVABLE,,,NO_TRIPLE_MATCH,,,"[295, 445, 147]",,,,"Three conflicting amounts and dates for ORD-2026-0147 (19700.00/19783.00/19633.00); not a single fee, duplicate, or booking miss"
+38,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,UNRESOLVABLE,,,NO_TRIPLE_MATCH,,,"[296, 446, 148]",,,,"Three conflicting amounts and dates for ORD-2026-0148 (25200.00/25283.00/25133.00); not a single fee, duplicate, or booking miss"
+39,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,UNRESOLVABLE,,,NO_TRIPLE_MATCH,,,"[297, 447, 149]",,,,"Three conflicting amounts and dates for ORD-2026-0149 (3200.00/3237.00/3159.00); not a single fee, duplicate, or booking miss"
+40,595dff23-303a-450b-9990-2f14feecb852,NEEDS_REVIEW,,UNRESOLVABLE,,,NO_TRIPLE_MATCH,,,"[298, 448, 150]",,,,"Three conflicting amounts and dates for ORD-2026-0150 (19400.50/19483.50/19381.50); not a single fee, duplicate, or booking miss"
