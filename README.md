@@ -189,15 +189,20 @@ Read-only gate simulation on the frozen leftovers:
 python -m finpulse gate-sim
 ```
 
-## Dashboard
+## Dashboard 
+![FINPULSE reconciliation control center](docs/dashboard.png)
 
-The dashboard loads `GET /runs/latest` and `GET /exceptions?run_id=…`. Values are API data, not hardcoded.
+The Vite app at `http://localhost:5173/` is the reconciliation control center. It loads `GET /runs/latest` and `GET /exceptions?run_id=…`. Values come from the current SQLite run. Nothing is hardcoded.
 
-- Metric cards: matcher precision/recall, exception-type accuracy (or Pending LLM), throughput, assumed manual baseline, cash split.
-- Exceptions table: predicted type, planted type, status, confidence. Click a row for detail.
-- Detail panel: AI explanation, recommended action, records on the same `order_ref`, audit events.
-- Approve / escalate: `POST /exceptions/{id}/approve` or `/escalate` with a reviewer name.
-- Export links: JSON, CSV, and unresolved list via `GET /exceptions/export`.
+- **API status:** one `GET /health` on load. Connected means the API process responded. It does not mean a run exists. A healthy API with no run still shows the existing empty state.
+- **Live run metrics:** matcher precision/recall vs the planted key, open leftovers, matcher wall time (`match_ms`), and cash matched / in transit / exceptional. The assumed manual baseline is a footnote. Records/min is not a headline figure.
+- **Exception-type accuracy:** shown for this run when `exception_accuracy_pct` is present. `--skip-llm` shows **Pending LLM**. Official scored accuracy is only in the frozen artifact folder below — the dashboard does not inject it.
+- **Exceptions table:** predicted type, planted / eval type, status, confidence. Client-side search (id, status, predicted type, planted type) plus status and type filters. The type filter matches predicted or planted. The table shows how many of the run’s leftovers match. Previous / next walk the filtered list.
+- **Detail:** explanation, recommended action, and confidence (or Not investigated).
+- **3-way comparison:** Razorpay / Bank / Ledger columns for every record on the leftover’s `order_ref`. A missing source is an empty column, not a fabricated ₹0. Duplicate sources stack in that column. Cards are marked leftover vs on-order context. Amount/date highlights are a visual hint only — not the safety gate.
+- **Approve / escalate:** `POST /exceptions/{id}/approve` or `/escalate` with a reviewer name. Approve is disabled when status is already `RESOLVED`. Escalate asks for confirmation. Results toast; failures do not look like success.
+- **Exports:** JSON, CSV, and unresolved list call `GET /exceptions/export?fmt=…&run_id=<displayed metrics.run_id>`. Links are disabled when no run is loaded. This is the visible run, not whatever later becomes database-latest.
+- **Audit:** `INGEST` and `MATCH` are grouped as shared run events (not specific to this leftover). `INVESTIGATE`, `APPROVE`, and `ESCALATE` are this leftover. A status transition is shown only when both `before_state` and `after_state` parse and both contain `status`. Raw JSON is not shown.
 
 ## API
 
